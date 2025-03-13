@@ -1,123 +1,123 @@
 import React from "react";
-import logo from '../assets/logo.png';
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import logo from "../assets/logo.png";
 
 interface SidemenuProps {
     customStyle?: React.CSSProperties;
 }
 
+const SIDEBAR_SECTIONS = [
+    {
+        title: "Main",
+        links: [{ to: "/", icon: "bi-speedometer2", label: "Dashboard" }],
+    },
+    {
+        title: "Admin Panel",
+        links: [
+            { to: "/active-users", icon: "bi-people-fill", label: "Active Users" },
+            { to: "/manage-businesses", icon: "bi-building", label: "Manage Businesses" },
+            { to: "/theme-editor", icon: "bi-palette", label: "Theme Editor" },
+        ],
+    },
+    {
+        title: "Communication",
+        links: [
+            { to: "/chat-clients", icon: "bi-chat-dots-fill", label: "Chat to Clients" },
+            { to: "/announcements", icon: "bi-megaphone-fill", label: "Announcements" },
+        ],
+    },
+    {
+        title: "Developer Tools",
+        links: [
+            { to: "/api-logs", icon: "bi-file-code-fill", label: "API & Logs" },
+            { to: "/performance-monitor", icon: "bi-graph-up", label: "Performance Monitor" },
+        ],
+    },
+    {
+        title: "System Settings",
+        links: [
+            { to: "/settings", icon: "bi-gear-fill", label: "General Settings" },
+            { to: "/github-repo", icon: "bi-github", label: "GitHub Repository" },
+        ],
+    },
+];
+
 const Sidemenu: React.FC<SidemenuProps> = ({ customStyle }) => {
+    const renderSidebarSections = () =>
+        SIDEBAR_SECTIONS.map((section, index) => (
+            <React.Fragment key={index}>
+                <li className="slide__category" style={{ listStyleType: "none" }}>
+                    <span className="category-name">{section.title}</span>
+                </li>
+                {section.links.map((link, linkIndex) => (
+                    <li className="slide" key={linkIndex} style={{ listStyleType: "none" }}>
+                        <Link to={link.to} className="side-menu__item">
+                            <i className={`w-5 h-4 side-menu__icon bi ${link.icon}`}></i>
+                            <span className="side-menu__label">{link.label}</span>
+                        </Link>
+                    </li>
+                ))}
+            </React.Fragment>
+        ));
+
     return (
         <aside
             className="app-sidebar"
             id="sidebar"
             style={{
                 minHeight: "100vh",
-                background: "linear-gradient(135deg, #ffffff, #e3f2fd, #e3f2fd)",
-                ...customStyle, 
+                width: "240px",
+                background: "linear-gradient(135deg, #ffffff, #f8e1e7, #d9e7ff, #fff7db)",
+                borderRadius: "12px",
+                padding: "12px",
+                marginRight: "10px",
+                ...customStyle,
             }}
         >
-            <div className="main-sidebar" id="sidebar-scroll">
-                <nav className="main-menu-container nav nav-pills flex-col sub-open">
-                    <ul className="main-menu">
-                        <li>
-                            <a href="">
-                                <center>
-                                    <img src={logo} className="transparent-shadow" style={{ maxHeight: "150px" }} />
-                                </center>
-                            </a>
-                        </li>
-                        <li>
-                            <hr className="mt-3" />
-                        </li>
-
-                        {/* Main */}
-                        <li className="slide__category">
-                            <span className="category-name">Main</span>
-                        </li>
-                        <li className="slide">
-                            <Link to="/" className="side-menu__item">
-                                <i className="w-6 h-4 side-menu__icon bi bi-speedometer2"></i>
-                                <span className="side-menu__label">Dashboard &ensp;</span>
-                            </Link>
-                        </li>
-
-                        {/* Admin Panel */}
-                        <li className="slide__category">
-                            <span className="category-name">Admin Panel</span>
-                        </li>
-                        <li className="slide">
-                            <Link to="/active-users" className="side-menu__item">
-                                <i className="w-6 h-4 side-menu__icon bi bi-people-fill"></i>
-                                <span className="side-menu__label">Active Users</span>
-                            </Link>
-                        </li>
-                        <li className="slide">
-                            <Link to="/manage-businesses" className="side-menu__item">
-                                <i className="w-6 h-4 side-menu__icon bi bi-building"></i>
-                                <span className="side-menu__label">Manage Businesses</span>
-                            </Link>
-                        </li>
-                        <li className="slide">
-                            <Link to="/theme-editor" className="side-menu__item">
-                                <i className="w-6 h-4 side-menu__icon bi bi-palette"></i>
-                                <span className="side-menu__label">Theme Editor</span>
-                            </Link>
-                        </li>
-
-                        {/* Communication */}
-                        <li className="slide__category">
-                            <span className="category-name">Communication</span>
-                        </li>
-                        <li className="slide">
-                            <Link to="/chat-clients" className="side-menu__item">
-                                <i className="w-6 h-4 side-menu__icon bi bi-chat-dots-fill"></i>
-                                <span className="side-menu__label">Chat to Clients</span>
-                            </Link>
-                        </li>
-                        <li className="slide">
-                            <Link to="/announcements" className="side-menu__item">
-                                <i className="w-6 h-4 side-menu__icon bi bi-megaphone-fill"></i>
-                                <span className="side-menu__label">Announcements</span>
-                            </Link>
-                        </li>
-
-                        {/* Developer Tools */}
-                        <li className="slide__category">
-                            <span className="category-name">Developer Tools</span>
-                        </li>
-                        <li className="slide">
-                            <Link to="/api-logs" className="side-menu__item">
-                                <i className="w-6 h-4 side-menu__icon bi bi-file-code-fill"></i>
-                                <span className="side-menu__label">API & Logs</span>
-                            </Link>
-                        </li>
-                        <li className="slide">
-                            <Link to="/performance-monitor" className="side-menu__item">
-                                <i className="w-6 h-4 side-menu__icon bi bi-graph-up"></i>
-                                <span className="side-menu__label">Performance Monitor</span>
-                            </Link>
-                        </li>
-
-                        {/* System Settings */}
-                        <li className="slide__category">
-                            <span className="category-name">System Settings</span>
-                        </li>
-                        <li className="slide">
-                            <Link to="/settings" className="side-menu__item">
-                                <i className="w-6 h-4 side-menu__icon bi bi-gear-fill"></i>
-                                <span className="side-menu__label">General Settings</span>
-                            </Link>
-                        </li>
-                        <li className="slide">
-                           <Link to="/github-repo" className="side-menu__item">
-                                <i className="w-6 h-4 side-menu__icon bi bi-github"></i>
-                                <span className="side-menu__label">GitHub Repository</span>
-                           </Link>
-                        </li>
-                    </ul>
-                </nav>
+            {/* Line Break before Dancing Text */}
+            <div style={{ textAlign: "center", marginBottom: "10px", marginTop: "-15px" }}>
+                <span
+                    style={{
+                        fontFamily: "'Dancing Script', cursive", // Apply Dancing Script font
+                        fontSize: "24px",
+                        fontWeight: "bold",
+                        color: "#333", // Darker color for contrast
+                        letterSpacing: "2px",
+                    }}
+                >
+                    <br />
+                    Multi Food Cuisine
+                </span>
             </div>
+
+            {/* Logo Section */}
+            <li style={{ marginBottom: "5px", listStyleType: "none" }}>
+                <Link to="/">
+                    <center>
+                        <img
+                            src={logo}
+                            className="transparent-shadow"
+                            alt="App Logo"
+                            style={{
+                                maxHeight: "80px",
+                                borderRadius: "8px",
+                                padding: "5px",
+                            }}
+                        />
+                    </center>
+                </Link>
+            </li>
+
+            <li style={{ listStyleType: "none" }}>
+                <hr className="mt-2 mb-2" />
+            </li>
+
+            {/* Sidebar Sections */}
+            <nav className="main-menu-container nav nav-pills flex-col sub-open">
+                <ul className="main-menu" style={{ listStyleType: "none" }}>
+                    {renderSidebarSections()}
+                </ul>
+            </nav>
         </aside>
     );
 };

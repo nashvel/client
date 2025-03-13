@@ -9,7 +9,7 @@ const ThemeEditor: React.FC = () => {
     const [headerColor, setHeaderColor] = useState("linear-gradient(135deg, #ffffff, #e3f2fd, #d1c4e9)");
     const [dashboardColor, setDashboardColor] = useState("linear-gradient(135deg, #ffffff, #e3f2fd, #d1c4e9)");
     const [breadcrumbColor, setBreadcrumbColor] = useState("#f0f0f0");
-    const [textColor, setTextColor] = useState("#000000"); // Default text color (black)
+    const [textColor, setTextColor] = useState("#000000"); 
 
     // Theme modes
     const [theme, setTheme] = useState(localStorage.getItem("themeMode") || "light");

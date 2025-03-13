@@ -1,159 +1,125 @@
-import React, { useState, useEffect } from 'react'
-import Breadcrumb from '../../../components/breadcrums'
-import Header from '../../../layouts/header'
-import Sidemenu from '../../../layouts/sidemenu'
-import { EmojiSmile, Trash, Pencil } from 'react-bootstrap-icons'
-import sticker1 from '../../../assets/stickers/sticker1.png'
-import sticker2 from '../../../assets/stickers/sticker2.png'
-import sticker3 from '../../../assets/stickers/sticker3.png'
-import Sticker from './sticker'
-import './chat-client.css'
+import React, { useState, useEffect } from 'react';
+import Breadcrumb from '../../../components/breadcrums';
+import Header from '../../../layouts/header';
+import Sidemenu from '../../../layouts/sidemenu';
+import { EmojiSmile, Trash, Pencil, Camera } from 'react-bootstrap-icons'; // Added Camera icon
+import sticker1 from '../../../assets/stickers/sticker1.png';
+import sticker2 from '../../../assets/stickers/sticker2.png';
+import sticker3 from '../../../assets/stickers/sticker3.png';
+import Sticker from './sticker';
+import './chat-client.css';
 
 interface Message {
-  sender: string
-  text?: string
-  sticker?: string
-  timestamp: string
+  sender: string;
+  text?: string;
+  sticker?: string;
+  timestamp: string;
+  image?: string; // Added image field
 }
 
-const clients = ['HarGem Korean Foodies', 'Demo 2']
-const stickers = [sticker1, sticker2, sticker3]
+const clients = ['HarGem Korean Foodies', 'Demo 2'];
+const stickers = [sticker1, sticker2, sticker3];
 
 const ChatToClients: React.FC = () => {
-  const [selectedClient, setSelectedClient] = useState<string>(clients[0])
-  const [messages, setMessages] = useState<Record<string, Message[]>>({})
-  const [inputMessage, setInputMessage] = useState('')
-  const [showStickers, setShowStickers] = useState(false)
-  const [swipedIndex, setSwipedIndex] = useState<number | null>(null)
-  const [swipeOffset, setSwipeOffset] = useState<number>(0)
-  const [startX, setStartX] = useState<number | null>(null)
-  const [showDeleteOptions, setShowDeleteOptions] = useState<number | null>(
-    null
-  )
-  const [editingIndex, setEditingIndex] = useState<number | null>(null)
-  const [editText, setEditText] = useState<string>('')
+  const [selectedClient, setSelectedClient] = useState(clients[0]);
+  const [messages, setMessages] = useState<Record<string, Message[]>>({});
+  const [inputMessage, setInputMessage] = useState('');
+  const [showStickers, setShowStickers] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editText, setEditText] = useState('');
+  const [imageUpload, setImageUpload] = useState<File | null>(null); // For image upload handling
 
   useEffect(() => {
-    const storedMessages = localStorage.getItem('chatMessages')
-    if (storedMessages) {
-      setMessages(JSON.parse(storedMessages))
-    }
-  }, [])
+    const stored = localStorage.getItem('chatMessages');
+    if (stored) setMessages(JSON.parse(stored));
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem('chatMessages', JSON.stringify(messages))
-  }, [messages])
-  const startEditing = (index: number, currentText: string | undefined) => {
-    setEditingIndex(index)
-    setEditText(currentText || '') // Populate the input field with the current message
-  }
+    localStorage.setItem('chatMessages', JSON.stringify(messages));
+  }, [messages]);
+
+  const startEditing = (index: number, text?: string) => {
+    setEditingIndex(index);
+    setEditText(text || '');
+  };
 
   const saveEditedMessage = () => {
-    if (editingIndex === null) return
-
-    setMessages((prev) => {
-      const updatedMessages = { ...prev }
-      if (!updatedMessages[selectedClient]) return prev // Ensure the client has messages
-      updatedMessages[selectedClient] = [...updatedMessages[selectedClient]] // Create a new array reference
-      updatedMessages[selectedClient][editingIndex] = {
-        ...updatedMessages[selectedClient][editingIndex], // Spread to maintain existing properties
-        text: editText,
-      }
-      return updatedMessages
-    })
-    setEditingIndex(null) // Exit editing mode
-  }
+    if (editingIndex === null) return;
+    setMessages(prev => {
+      const updated = { ...prev };
+      if (!updated[selectedClient]) return prev;
+      updated[selectedClient] = [...updated[selectedClient]];
+      updated[selectedClient][editingIndex] = { ...updated[selectedClient][editingIndex], text: editText };
+      return updated;
+    });
+    setEditingIndex(null);
+  };
 
   const sendMessage = () => {
-    if (!inputMessage.trim()) return
+    if (!inputMessage.trim() && !imageUpload) return; // Don't send if empty and no image
     const newMessage: Message = {
       sender: 'Admin',
       text: inputMessage,
+      image: imageUpload ? URL.createObjectURL(imageUpload) : undefined, // Use image URL if an image is uploaded
       timestamp: new Date().toLocaleTimeString(),
+    };
+    if (imageUpload) {
+      newMessage.text = ''; // Remove text if image is being sent
     }
-    setMessages((prev) => ({
-      ...prev,
-      [selectedClient]: [...(prev[selectedClient] || []), newMessage],
-    }))
-    setInputMessage('')
-  }
+    setMessages(prev => ({ ...prev, [selectedClient]: [...(prev[selectedClient] || []), newMessage] }));
+    setInputMessage('');
+    setImageUpload(null); // Clear image after sending
+  };
 
   const sendSticker = (sticker: string) => {
-    const newMessage: Message = {
-      sender: 'Admin',
-      sticker,
-      timestamp: new Date().toLocaleTimeString(),
+    const newMessage: Message = { sender: 'Admin', sticker, timestamp: new Date().toLocaleTimeString() };
+    setMessages(prev => ({ ...prev, [selectedClient]: [...(prev[selectedClient] || []), newMessage] }));
+    setShowStickers(false);
+  };
+
+  const deleteMessage = (index: number) => {
+    setMessages(prev => {
+      const updated = { ...prev };
+      updated[selectedClient] = updated[selectedClient].filter((_, i) => i !== index);
+      return updated;
+    });
+  };
+
+  // Handle file upload (triggered when the camera icon is clicked)
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImageUpload(file);
     }
-    setMessages((prev) => ({
-      ...prev,
-      [selectedClient]: [...(prev[selectedClient] || []), newMessage],
-    }))
-    setShowStickers(false)
-  }
-
-  const deleteMessage = (index: number, fromEveryone: boolean) => {
-    setMessages((prev) => {
-      const updatedMessages = { ...prev }
-      if (fromEveryone) {
-        updatedMessages[selectedClient] = updatedMessages[
-          selectedClient
-        ].filter((_, i) => i !== index)
-      } else {
-        // Logic for deleting only for current user (optional, modify if needed)
-      }
-      return updatedMessages
-    })
-    setShowDeleteOptions(null)
-  }
-
-  // Handle swipe gestures
-  const handleTouchStart = (e: React.TouchEvent, index: number) => {
-    setStartX(e.touches[0].clientX)
-    setSwipedIndex(index)
-    setSwipeOffset(0)
-  }
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (startX !== null && swipedIndex !== null) {
-      const moveX = e.touches[0].clientX
-      const diff = startX - moveX
-      if (diff > 0) {
-        setSwipeOffset(-Math.min(diff, 80)) // Limit max swipe left
-      }
-    }
-  }
-
-  const handleTouchEnd = () => {
-    if (swipeOffset < -40) {
-      setSwipeOffset(-80) // Fully reveal buttons
-    } else {
-      setSwipedIndex(null)
-      setSwipeOffset(0)
-    }
-    setStartX(null)
-  }
+  };
 
   return (
     <>
       <Header />
       <Sidemenu />
+      <div
+        className="main-content app-content chat-container fixed inset-0 flex flex-col justify-start pt-16 h-full"
+        style={{
+          background: 'linear-gradient(135deg, #f8e1e7, #ffffff, #f8e1e7, #d9e7ff, #fff7db)',
+          backgroundAttachment: 'fixed',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+      
+        <div className="absolute inset-0 bg-white/30 backdrop-blur-md" style={{ pointerEvents: 'none' }}></div>
 
-      <div className="main-content app-content chat-container">
-        <div className="container-fluid">
+        <div className="container-fluid mt-20 h-full">
           <Breadcrumb title="Chat to Clients" active={selectedClient} />
-
-          <div className="flex">
-            <div className="w-1/4 bg-white p-4 shadow rounded-lg">
+          <div className="flex justify-center">
+            {/* Sidebar */}
+            <div className="w-1/4 p-4 rounded-lg backdrop-blur-lg bg-white/30 border border-white/40 shadow-lg shadow-gray-500/50">
               <h3 className="text-lg font-bold mb-2">Clients</h3>
               <ul>
-                {clients.map((client) => (
+                {clients.map(client => (
                   <li
                     key={client}
-                    className={`p-2 cursor-pointer ${
-                      selectedClient === client
-                        ? 'bg-blue-200'
-                        : 'hover:bg-gray-100'
-                    }`}
+                    className={`p-2 cursor-pointer ${selectedClient === client ? 'bg-blue-200' : 'hover:bg-gray-100'}`}
                     onClick={() => setSelectedClient(client)}
                   >
                     {client}
@@ -162,127 +128,80 @@ const ChatToClients: React.FC = () => {
               </ul>
             </div>
 
-            <div className="w-3/4 bg-white p-4 shadow rounded-lg ml-4">
+            {/* Chat Section */}
+            <div className="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3 p-4 rounded-lg ml-4 bg-transparent border border-white/40 shadow-lg shadow-gray-500/50 flex flex-col h-[80vh]">
               <h3 className="text-lg font-bold mb-2">{selectedClient}</h3>
-              <div className="h-80 overflow-y-auto border p-2 chat-window">
-                {messages[selectedClient]?.map((msg, index) => (
+
+              {/* Messages - Fixed height to prevent overflowing */}
+              <div
+                className="overflow-y-auto border p-2 chat-window rounded-lg bg-transparent flex-1"
+                style={{ maxHeight: '65vh', minHeight: '40vh' }}
+              >
+                {messages[selectedClient]?.slice().reverse().map((msg, index) => (
                   <div key={index} className="message-wrapper">
-                    {/* Trash & Edit Buttons (Behind Message) */}
                     <div className="message-actions">
-                      <button
-                        className="delete-btn"
-                        onClick={() => setShowDeleteOptions(index)}
-                      >
+                      <button className="delete-btn" onClick={() => deleteMessage(index)}>
                         <Trash size={16} />
                       </button>
-                      <button
-                        className="edit-btn"
-                        onClick={() => startEditing(index, msg.text)}
-                      >
+                      <button className="edit-btn" onClick={() => startEditing(index, msg.text)}>
                         <Pencil size={16} />
                       </button>
                     </div>
-
-                    {/* Message Content (Swipeable) */}
-                    <div
-                      className="chat-message"
-                      style={{
-                        transform: `translateX(${
-                          swipedIndex === index ? swipeOffset : 0
-                        }px)`,
-                        transition: 'transform 0.3s ease-in-out',
-                      }}
-                      onTouchStart={(e) => handleTouchStart(e, index)}
-                      onTouchMove={handleTouchMove}
-                      onTouchEnd={handleTouchEnd}
-                    >
+                    <div className="chat-message">
                       <div className="message-content">
-                        <strong>{msg.sender}:</strong>{' '}
-                        {editingIndex === index ? (
-                          <input
-                            type="text"
-                            className="w-full p-2 border rounded"
-                            value={editText}
-                            onChange={(e) => setEditText(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') saveEditedMessage()
-                            }}
-                          />
-                        ) : (
-                          msg.text && <span>{msg.text}</span>
-                        )}
-                        {msg.sticker && (
-                          <img
-                            src={msg.sticker}
-                            alt="sticker"
-                            className="w-16 h-16 inline-block"
-                          />
-                        )}
-                        <span className="text-gray-400 text-sm ml-2">
-                          {msg.timestamp}
-                        </span>
+                        <strong>{msg.sender}:</strong>
+                        {/* Add a space after the message sender */}
+                        <span>{msg.text}</span>
+                        {msg.image && <img src={msg.image} alt="Uploaded" className="w-16 h-16 inline-block mt-2" />}
+                        {msg.sticker && <img src={msg.sticker} alt="sticker" className="w-16 h-16 inline-block mt-2" />}
+                        {/* Add margin between the text and timestamp */}
+                        <div className="mt-1 text-gray-400 text-sm">{msg.timestamp}</div>
                       </div>
                     </div>
-
-                    {/* Delete Confirmation Popup */}
-                    {showDeleteOptions === index && (
-                      <div className="delete-options flex flex-col space-y-2 p-2 bg-white shadow-lg rounded-lg mt-20 border border-gray-200 z-10">
-                        <button
-                          className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
-                          onClick={() => deleteMessage(index, true)}
-                        >
-                          Delete from Everyone
-                        </button>
-                        <button
-                          className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition"
-                          onClick={() => deleteMessage(index, false)}
-                        >
-                          Delete from You
-                        </button>
-                        <button
-                          className="bg-gray-300 text-black py-2 px-4 rounded-lg hover:bg-gray-400 transition"
-                          onClick={() => setShowDeleteOptions(null)}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
 
-              <div className="mt-4">
-                <div className="flex">
-                  <input
-                    type="text"
-                    className="w-full p-2 border rounded-l"
-                    value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
-                    placeholder="Type a message..."
-                  />
-                  <button
-                    onClick={sendMessage}
-                    className="bg-blue-500 text-white px-4 rounded-r"
-                  >
-                    Send
-                  </button>
-                  <button
-                    onClick={() => setShowStickers(!showStickers)}
-                    className="ml-2 p-2 bg-gray-200 rounded-full hover:bg-gray-300"
-                  >
-                    <EmojiSmile size={24} />
-                  </button>
-                </div>
-                {showStickers && (
-                  <Sticker stickers={stickers} onSelect={sendSticker} />
+              {/* Input Field - Stays Fixed at Bottom */}
+              <div className="mt-4 flex items-center bg-white p-2 border-t rounded-lg max-w-[500px] w-full justify-start">
+                <input
+                  type="text"
+                  className="w-full p-2 border rounded-l"
+                  value={inputMessage}
+                  onChange={e => setInputMessage(e.target.value)}
+                  placeholder="Type a message..."
+                />
+                {/* Show image preview if uploaded */}
+                {imageUpload && (
+                  <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center ml-2">
+                    <img src={URL.createObjectURL(imageUpload)} alt="image preview" className="w-full h-full object-cover" />
+                  </div>
                 )}
+                <button onClick={sendMessage} className="bg-blue-500 text-white px-4 py-2 rounded-full">
+                  Send
+                </button>
+                <button onClick={() => setShowStickers(!showStickers)} className="ml-2 p-2 bg-gray-200 rounded-full hover:bg-gray-300">
+                  <EmojiSmile size={24} />
+                </button>
+                <label htmlFor="file-upload" className="ml-2 p-2 bg-gray-200 rounded-full hover:bg-gray-300 cursor-pointer">
+                  <Camera size={24} />
+                </label>
+                <input
+                  type="file"
+                  id="file-upload"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                />
               </div>
+
+              {/* Stickers */}
+              {showStickers && <Sticker stickers={stickers} onSelect={sendSticker} />}
             </div>
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default ChatToClients
+export default ChatToClients;
