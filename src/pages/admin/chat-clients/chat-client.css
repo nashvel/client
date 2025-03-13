@@ -1,0 +1,70 @@
+.chat-window {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .message-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  
+  .chat-message {
+    position: relative;
+    flex-grow: 1;
+    background: #f0f0f0;
+    padding: 12px;
+    border-radius: 8px;
+    transition: transform 0.3s ease-in-out;
+    cursor: grab;
+    z-index: 2;
+  }
+  
+  /* Swipe Effect */
+  .chat-message:active {
+    cursor: grabbing;
+  }
+  
+  .message-actions {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 10px;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 1;
+  }
+  
+  /* Trash & Edit Buttons */
+  .message-actions button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: white;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+  
+  /* Trash */
+  .message-actions .delete-btn {
+    background: red;
+  }
+  
+  .message-actions .delete-btn:hover {
+    background: darkred;
+  }
+  
+  /* Edit */
+  .message-actions .edit-btn {
+    background: blue;
+  }
+  
+  .message-actions .edit-btn:hover {
+    background: darkblue;
+  }
