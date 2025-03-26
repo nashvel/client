@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/logo.png";
 
 interface SidemenuProps {
     customStyle?: React.CSSProperties;
@@ -12,32 +11,18 @@ const SIDEBAR_SECTIONS = [
         links: [{ to: "/", icon: "bi-speedometer2", label: "Dashboard" }],
     },
     {
-        title: "Admin Panel",
+        title: "",
         links: [
-            { to: "/active-users", icon: "bi-people-fill", label: "Active Users" },
-            { to: "/manage-businesses", icon: "bi-building", label: "Manage Businesses" },
-            { to: "/theme-editor", icon: "bi-palette", label: "Theme Editor" },
+            { to: "/manage-food", icon: "bi-building", label: "Manage Food" },
+            { to: "/theme", icon: "bi-palette", label: "Themes" },
         ],
     },
     {
-        title: "Communication",
+        title: "",
         links: [
-            { to: "/chat-clients", icon: "bi-chat-dots-fill", label: "Chat to Clients" },
-            { to: "/announcements", icon: "bi-megaphone-fill", label: "Announcements" },
-        ],
-    },
-    {
-        title: "Developer Tools",
-        links: [
-            { to: "/api-logs", icon: "bi-file-code-fill", label: "API & Logs" },
-            { to: "/performance-monitor", icon: "bi-graph-up", label: "Performance Monitor" },
-        ],
-    },
-    {
-        title: "System Settings",
-        links: [
-            { to: "/settings", icon: "bi-gear-fill", label: "General Settings" },
-            { to: "/github-repo", icon: "bi-github", label: "GitHub Repository" },
+            { to: "/chat-admin", icon: "bi-chat-dots-fill", label: "Chat to Admin" },
+            { to: "/promo", icon: "bi-megaphone-fill", label: "Add Promo" },
+            { to: "/sales", icon: "bi-megaphone-fill", label: "View Sales" },
         ],
     },
 ];
@@ -52,7 +37,7 @@ const Sidemenu: React.FC<SidemenuProps> = ({ customStyle }) => {
                 {section.links.map((link, linkIndex) => (
                     <li className="slide" key={linkIndex} style={{ listStyleType: "none" }}>
                         <Link to={link.to} className="side-menu__item">
-                            <i className={`w-5 h-4 side-menu__icon bi ${link.icon}`}></i>
+                            <i className={`w-5 h-4 side-menu__icon bi ${link.icon}`} style={{ marginRight: "8px" }}></i>
                             <span className="side-menu__label">{link.label}</span>
                         </Link>
                     </li>
@@ -71,50 +56,31 @@ const Sidemenu: React.FC<SidemenuProps> = ({ customStyle }) => {
                 borderRadius: "12px",
                 padding: "12px",
                 marginRight: "10px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-start", // Keeps content higher
+                paddingTop: "50px", // Adjust upward movement
                 ...customStyle,
             }}
         >
-            {/* Line Break before Dancing Text */}
-            <div style={{ textAlign: "center", marginBottom: "10px", marginTop: "-15px" }}>
+            {/* Title Section */}
+            <div style={{ textAlign: "center", marginBottom: "15px" }}> {/* Adjusted margin for spacing */}
                 <span
                     style={{
-                        fontFamily: "'Dancing Script', cursive", // Apply Dancing Script font
+                        fontFamily: "'Dancing Script', cursive",
                         fontSize: "24px",
                         fontWeight: "bold",
-                        color: "#333", // Darker color for contrast
+                        color: "#333",
                         letterSpacing: "2px",
                     }}
                 >
-                    <br />
                     Multi Food Cuisine
                 </span>
             </div>
 
-            {/* Logo Section */}
-            <li style={{ marginBottom: "5px", listStyleType: "none" }}>
-                <Link to="/">
-                    <center>
-                        <img
-                            src={logo}
-                            className="transparent-shadow"
-                            alt="App Logo"
-                            style={{
-                                maxHeight: "80px",
-                                borderRadius: "8px",
-                                padding: "5px",
-                            }}
-                        />
-                    </center>
-                </Link>
-            </li>
-
-            <li style={{ listStyleType: "none" }}>
-                <hr className="mt-2 mb-2" />
-            </li>
-
             {/* Sidebar Sections */}
-            <nav className="main-menu-container nav nav-pills flex-col sub-open">
-                <ul className="main-menu" style={{ listStyleType: "none" }}>
+            <nav className="main-menu-container nav nav-pills flex-col sub-open" style={{ width: "100%" }}>
+                <ul className="main-menu" style={{ listStyleType: "none", padding: "0", width: "100%" }}>
                     {renderSidebarSections()}
                 </ul>
             </nav>

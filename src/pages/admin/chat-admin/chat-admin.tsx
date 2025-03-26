@@ -17,10 +17,10 @@ interface Message {
   image?: string; // Added image field
 }
 
-const clients = ['HarGem Korean Foodies', 'Demo 2'];
+const clients = ['Admin 1', 'Admin 2'];
 const stickers = [sticker1, sticker2, sticker3];
 
-const ChatToClients: React.FC = () => {
+const ChatToAdmin: React.FC = () => {
   const [selectedClient, setSelectedClient] = useState(clients[0]);
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [inputMessage, setInputMessage] = useState('');
@@ -114,7 +114,7 @@ const ChatToClients: React.FC = () => {
           <div className="flex justify-center">
             {/* Sidebar */}
             <div className="w-1/4 p-4 rounded-lg backdrop-blur-lg bg-white/30 border border-white/40 shadow-lg shadow-gray-500/50">
-              <h3 className="text-lg font-bold mb-2">Clients</h3>
+              <h3 className="text-lg font-bold mb-2">Admins</h3>
               <ul>
                 {clients.map(client => (
                   <li
@@ -204,4 +204,4 @@ const ChatToClients: React.FC = () => {
   );
 };
 
-export default ChatToClients;
+export default ChatToAdmin;
