@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Breadcrumb from "../../../components/breadcrums";
 import Header from "../../../layouts/header";
 import Sidemenu from "../../../layouts/sidemenu";
-import { Trash, Pencil, PlusCircle } from "react-bootstrap-icons";
+import { Trash, Pencil, } from "react-bootstrap-icons";
 
 interface FoodItem {
   name: string;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../../components/breadcrums';
 import Header from '../../../layouts/header';
 import Sidemenu from '../../../layouts/sidemenu';
-import { EmojiSmile, Trash, Pencil, Camera } from 'react-bootstrap-icons'; // Added Camera icon
+import { EmojiSmile, Trash, Camera } from 'react-bootstrap-icons'; // Added Camera icon
 import sticker1 from '../../../assets/stickers/sticker1.png';
 import sticker2 from '../../../assets/stickers/sticker2.png';
 import sticker3 from '../../../assets/stickers/sticker3.png';
@@ -25,8 +25,6 @@ const ChatToAdmin: React.FC = () => {
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [inputMessage, setInputMessage] = useState('');
   const [showStickers, setShowStickers] = useState(false);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [editText, setEditText] = useState('');
   const [imageUpload, setImageUpload] = useState<File | null>(null); // For image upload handling
 
   useEffect(() => {
@@ -38,22 +36,8 @@ const ChatToAdmin: React.FC = () => {
     localStorage.setItem('chatMessages', JSON.stringify(messages));
   }, [messages]);
 
-  const startEditing = (index: number, text?: string) => {
-    setEditingIndex(index);
-    setEditText(text || '');
-  };
 
-  const saveEditedMessage = () => {
-    if (editingIndex === null) return;
-    setMessages(prev => {
-      const updated = { ...prev };
-      if (!updated[selectedClient]) return prev;
-      updated[selectedClient] = [...updated[selectedClient]];
-      updated[selectedClient][editingIndex] = { ...updated[selectedClient][editingIndex], text: editText };
-      return updated;
-    });
-    setEditingIndex(null);
-  };
+
 
   const sendMessage = () => {
     if (!inputMessage.trim() && !imageUpload) return; // Don't send if empty and no image
@@ -142,9 +126,6 @@ const ChatToAdmin: React.FC = () => {
                     <div className="message-actions">
                       <button className="delete-btn" onClick={() => deleteMessage(index)}>
                         <Trash size={16} />
-                      </button>
-                      <button className="edit-btn" onClick={() => startEditing(index, msg.text)}>
-                        <Pencil size={16} />
                       </button>
                     </div>
                     <div className="chat-message">

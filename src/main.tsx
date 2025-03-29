@@ -7,11 +7,11 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import './assets/css/style.css';
 
 import Dashboard from './pages/dashboard';
-import ThemeEditor from './pages/admin/theme-editor/theme-editor';
-import ChatToAdmin from './pages/admin/chat-admin/chat-admin';
-import ManageBusinesses from './pages/admin/businesses/businesses';
-import SalesReport from './pages/admin/sales/sales';
-import PromoPage from './pages/admin/promo/promo';
+import ThemeEditor from './pages/client/theme-editor/theme-editor';
+import ChatToAdmin from './pages/client/chat-admin/chat-admin';
+import ManageBusinesses from './pages/client/businesses/businesses';
+import SalesReport from './pages/client/sales/sales';
+import PromoPage from './pages/client/promo/promo';
 
 
 createRoot(document.getElementById('root')!).render(
