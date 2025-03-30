@@ -53,6 +53,8 @@ const PromoPage: React.FC = () => {
           backgroundAttachment: 'fixed',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
+          marginBottom: '0px',
+          marginTop: '0px',
         }}
       >
         <Breadcrumb title="Promo Management" active="Promos" />

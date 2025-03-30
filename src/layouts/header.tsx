@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useSidebar } from "../layouts/sidebarcontent";
 
 const Header: React.FC = () => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isScrolling, setIsScrolling] = useState(false);
+    const { toggleSidebar } = useSidebar(); // Get the sidebar toggle function
     let scrollTimeout: number;
 
     const toggleExpand = () => {
@@ -26,7 +28,7 @@ const Header: React.FC = () => {
                 position: "fixed",
                 top: "10px",
                 left: "50%",
-                transform: "translateX(-50%) scale(" + (isScrolling ? 0.8 : 1) + ")",
+                transform: `translateX(-50%) scale(${isScrolling ? 0.8 : 1})`,
                 background: "linear-gradient(135deg, #ffffff, #f8e1e7, #d9e7ff, #fff7db)",
                 color: "#fff",
                 height: "50px",
@@ -43,24 +45,28 @@ const Header: React.FC = () => {
             }}
         >
             {/* Sidebar Toggle */}
-            <button style={{ border: "none", background: "transparent", fontSize: "22px" }}>☰</button>
+            <button onClick={toggleSidebar} style={{ border: "none", background: "transparent", fontSize: "22px" }}>
+                ☰
+            </button>
 
             {/* Search Bar */}
             <input
-                type="text"
-                placeholder="Search..."
-                style={{
-                    background: "rgba(255, 255, 255, 0.2)",
-                    border: "none",
-                    color: "#fff",
-                    padding: "5px 10px",
-                    borderRadius: "15px",
-                    outline: "none",
-                    fontSize: "14px",
-                    width: "130px",
-                    transition: "width 0.2s ease-in-out",
-                }}
-            />
+    type="text"
+    placeholder="Search..."
+    style={{
+        background: "rgba(255, 255, 255, 0.2)", // Semi-transparent background
+        backdropFilter: "blur(10px)", // Apply blur effect
+        border: "none",
+        color: "#fff",
+        padding: "5px 10px",
+        borderRadius: "15px",
+        outline: "none",
+        fontSize: "14px",
+        width: "130px",
+        transition: "width 0.2s ease-in-out",
+    }}
+/>
+
 
             {/* Profile Icon */}
             <div

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -19,26 +19,54 @@ const salesData = [
   { day: "Sun", sales: 3000 },
 ];
 
-interface WeeklySalesOverviewProps {
-  isMobile: boolean;
-}
+const WeeklySalesOverview: React.FC = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
 
-const WeeklySalesOverview: React.FC<WeeklySalesOverviewProps> = ({ isMobile }) => (
-  <div
-    className={`p-6 bg-white shadow-lg rounded-lg mt-6 
-                ${isMobile ? "bg-[#e0e5ec] shadow-[8px_8px_16px_#bebebe,_-8px_-8px_16px_#ffffff] rounded-2xl" : "shadow-md"}`}
-  >
-    <h2 className="text-xl font-bold mb-4 text-gray-700">Weekly Sales Overview</h2>
-    <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
-      <LineChart data={salesData}>
-        <CartesianGrid strokeDasharray="3 3" stroke={isMobile ? "#d1d9e6" : "#ccc"} />
-        <XAxis dataKey="day" stroke="#555" />
-        <YAxis stroke="#555" />
-        <Tooltip contentStyle={{ backgroundColor: "rgba(255, 255, 255, 0.9)", borderRadius: "10px" }} />
-        <Line type="monotone" dataKey="sales" stroke="#8884d8" strokeWidth={2} dot={{ r: 4, fill: "#8884d8" }} />
-      </LineChart>
-    </ResponsiveContainer>
-  </div>
-);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 640);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return (
+    <div
+      style={{
+        marginTop: isMobile ? "-130px" : "0px", // Moves the component downward
+        padding: isMobile ? "20px" : "16px",
+        background: isMobile ? "rgba(255, 255, 255, 0.15)" : "white",
+        backdropFilter: isMobile ? "blur(20px)" : "none",
+        WebkitBackdropFilter: isMobile ? "blur(20px)" : "none",
+        borderRadius: isMobile ? "18px" : "8px",
+        boxShadow: isMobile
+          ? "0 10px 30px rgba(0, 0, 0, 0.2)"
+          : "0 2px 4px rgba(0, 0, 0, 0.1)",
+        border: isMobile ? "1px solid rgba(255, 255, 255, 0.25)" : "none",
+        color: isMobile ? "rgba(255, 255, 255, 0.95)" : "black",
+        textAlign: "center",
+        transition: "all 0.3s ease-in-out",
+      }}
+    >
+      <h2
+        style={{
+          fontSize: isMobile ? "1rem" : "1.25rem",
+          fontWeight: isMobile ? 600 : "bold",
+          textTransform: isMobile ? "uppercase" : "none",
+          letterSpacing: isMobile ? "1px" : "normal",
+        }}
+      >
+        Weekly Sales Overview
+      </h2>
+      <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
+        <LineChart data={salesData}>
+          <CartesianGrid strokeDasharray="3 3" stroke={isMobile ? "#d1d9e6" : "#ccc"} />
+          <XAxis dataKey="day" stroke={isMobile ? "#ffffff" : "#555"} />
+          <YAxis stroke={isMobile ? "#ffffff" : "#555"} />
+          <Tooltip contentStyle={{ backgroundColor: "rgba(255, 255, 255, 0.9)", borderRadius: "10px" }} />
+          <Line type="monotone" dataKey="sales" stroke="#8884d8" strokeWidth={2} dot={{ r: 4, fill: "#8884d8" }} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
 
 export default WeeklySalesOverview;

@@ -88,6 +88,8 @@ const ChatToAdmin: React.FC = () => {
           backgroundAttachment: 'fixed',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
+          marginTop: '0px',
+          marginBottom: '0px',
         }}
       >
       
