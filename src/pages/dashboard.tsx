@@ -5,7 +5,7 @@ import Sidemenu from "../layouts/sidemenu";
 import TotalSales from "../components/reports/TotalSales";
 import Transactions from "../components/reports/Transactions";
 import Revenue from "../components/reports/Revenue";
-import WeeklySalesOverview from "../components/reports/WeeklySalesOverview";
+import WeeklySalesOverview from "../components/reports/WeeklySalesOverview"; 
 import BestSellingItems from "../components/reports/BestSelling";
 import RecentTransactions from "../components/reports/RecentTransactions";
 
@@ -21,10 +21,10 @@ function Dashboard() {
 
     window.addEventListener("resize", handleResize);
 
-    // ✅ Listen for the "beforeinstallprompt" event
+    // Listen for the "beforeinstallprompt" event
     window.addEventListener("beforeinstallprompt", (e: any) => {
-      e.preventDefault(); // Stop the automatic prompt
-      setDeferredPrompt(e); // Save the event
+      // Remove preventDefault to allow the banner to show
+      setDeferredPrompt(e); // Save the event to trigger later
       setShowInstallButton(true); // Show the install button
     });
 
@@ -33,7 +33,7 @@ function Dashboard() {
     };
   }, []);
 
-  // ✅ Handle Manual Install
+  // Handle Manual Install
   const handleInstall = () => {
     if (deferredPrompt) {
       deferredPrompt.prompt(); // Show prompt
@@ -45,7 +45,7 @@ function Dashboard() {
           console.log("[PWA] User dismissed the install prompt");
         }
         setDeferredPrompt(null); // Reset
-        setShowInstallButton(false); // Hide button
+        setShowInstallButton(false); // Hide the install button after prompt
       });
     }
   };
@@ -67,7 +67,7 @@ function Dashboard() {
         <div className="container-fluid">
           <Breadcrumb />
 
-          {/* ✅ Install Button Only Shown if Prompt Available */}
+          {/* Install Button Only Shown if Prompt Available */}
           {showInstallButton && (
             <button
               onClick={handleInstall}
